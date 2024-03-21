@@ -148,6 +148,23 @@ class PostRecipeSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags)
         return recipe
 
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        instance.ingredients.clear()
+        for ingredient in ingredients:
+            if ingredient['amount'] <= 0:
+                raise serializers.ValidationError(
+                    'Колличество ингредиентов должно быть больше 0'
+                )
+            IngredientRecipe.objects.create(
+                ingredient=ingredient['id'],
+                recipe=instance,
+                amount=ingredient['amount']
+            )
+        instance.tags.set(tags)
+        return super().update(instance, validated_data)
+
     def to_representation(self, instance):
         serializer = super().to_representation(instance)
         serializer['ingredients'] = IngredientRecipeSerializer(
@@ -158,6 +175,10 @@ class PostRecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Валидация."""
+        if 'ingredients' not in data:
+            raise serializers.ValidationError('Добавьте ингредиенты')
+        if 'tags' not in data:
+            raise serializers.ValidationError('Добавьте теги')
         if len(set(data['tags'])) != len(data['tags']):
             raise serializers.ValidationError(
                 'нельзя добавлять одинаковые теги'

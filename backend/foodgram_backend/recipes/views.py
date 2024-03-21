@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import (IsAuthenticated)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.validators import ValidationError
 
 from recipes.filters import IngredientsCustomSearch, RecipeFilter
@@ -155,7 +155,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Recipe.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.request.method not in permissions.SAFE_METHODS:
             return PostRecipeSerializer
         return GetRecipeSerializer
 

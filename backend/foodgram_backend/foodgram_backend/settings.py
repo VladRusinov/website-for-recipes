@@ -86,7 +86,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'recipes.User'
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'UTC'
 

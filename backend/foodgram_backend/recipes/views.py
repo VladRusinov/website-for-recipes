@@ -48,9 +48,9 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     @action(
-            detail=False,
-            methods=['get'],
-            permission_classes=[IsAuthenticated]
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated]
     )
     def me(self, request):
         """Текущий пользователь."""
@@ -63,9 +63,9 @@ class UserViewSet(viewsets.ModelViewSet):
         )
 
     @action(
-            detail=False,
-            methods=['Post'],
-            permission_classes=[IsAuthenticated]
+        detail=False,
+        methods=['Post'],
+        permission_classes=[IsAuthenticated]
     )
     def set_password(self, request):
         """Изменение пароля текущего пользователя."""
@@ -80,10 +80,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-            detail=False,
-            methods=['get'],
-            permission_classes=[IsAuthenticated],
-            pagination_class=CustomPagination
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated],
+        pagination_class=CustomPagination
     )
     def subscriptions(self, request):
         """Подписки текущего пользователя."""
@@ -91,16 +91,16 @@ class UserViewSet(viewsets.ModelViewSet):
             Follow.objects.filter(user=self.request.user)
         )
         serializer = FollowSerializer(
-                following,
-                many=True,
-                context={'request': request}
+            following,
+            many=True,
+            context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
 
     @action(
-            detail=True,
-            methods=['post', 'delete'],
-            permission_classes=[IsAuthenticated]
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, pk):
         """Создание и удаление подписки."""
@@ -164,9 +164,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     @action(
-            detail=True,
-            methods=['post', 'delete'],
-            permission_classes=[IsAuthenticated]
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated]
     )
     def favorite(self, request, pk):
         """Избранное."""
@@ -179,9 +179,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.delete_recipe(request, pk, Favorite, message)
 
     @action(
-            detail=True,
-            methods=['post', 'delete'],
-            permission_classes=[IsAuthenticated]
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated]
     )
     def shopping_cart(self, request, pk):
         """Список покупок."""
@@ -194,9 +194,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.delete_recipe(request, pk, ShoppingCart, message)
 
     @action(
-            detail=False,
-            methods=['get',],
-            permission_classes=[IsAuthenticated]
+        detail=False,
+        methods=['get',],
+        permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
         """Скачать список покупок."""

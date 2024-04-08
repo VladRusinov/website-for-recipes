@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("Loading data")
         for row in csv.reader(
-            open('../../data/ingredients.csv', encoding='utf-8')
+            open('data/ingredients.csv', encoding='utf-8')
         ):
             ingredient = Ingredient(
                 name=row[0], measurement_unit=row[1]
@@ -18,7 +18,7 @@ class Command(BaseCommand):
             ingredient.save()
 
         for row in csv.reader(
-            open('../../data/tags.csv', encoding='utf-8')
+            open('data/tags.csv', encoding='utf-8')
         ):
             tag = Tag(
                 name=row[0], color=row[1], slug=row[2]

@@ -5,10 +5,14 @@ from recipes.models import Recipe, User, Tag
 
 
 class IngredientsCustomSearch(SearchFilter):
+    """Поиск по игредиентам."""
+
     search_param = "name"
 
 
 class RecipeFilter(FilterSet):
+    """Фильтрация рецептов."""
+
     author = filters.ModelChoiceFilter(
         queryset=User.objects.all())
     tags = filters.ModelMultipleChoiceFilter(

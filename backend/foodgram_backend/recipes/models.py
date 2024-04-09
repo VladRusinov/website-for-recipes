@@ -106,11 +106,13 @@ class Recipe(models.Model):
     )
     is_favorited = models.BooleanField('в избранном', default=False)
     is_in_shopping_cart = models.BooleanField('в корзине', default=False)
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
     def __str__(self):
         return self.name[:LETTER_LIMIT]
 
     class Meta:
+        ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         default_related_name = 'recipes'

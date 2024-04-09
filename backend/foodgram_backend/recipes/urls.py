@@ -5,8 +5,8 @@ from recipes.views import (
     IngredientViewSet,
     RecipeViewSet,
     TagViewSet,
-    UserViewSet
 )
+from users.views import UserViewSet
 
 app_name = 'recipes'
 

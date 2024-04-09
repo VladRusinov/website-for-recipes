@@ -2,13 +2,11 @@ from django.contrib import admin
 
 from recipes.models import (
     Favorite,
-    Follow,
     Ingredient,
     IngredientRecipe,
     Recipe,
     ShoppingCart,
     Tag,
-    User
 )
 
 
@@ -34,20 +32,6 @@ class RecipeAdmin(admin.ModelAdmin):
     in_favorite.short_description = 'Cколько раз рецепт добавлен в избранное'
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = (
-        'username',
-        'email',
-        'first_name',
-        'last_name',
-        'role'
-    )
-    search_fields = ('username', 'email')
-    list_filter = ('username', 'email')
-    list_editable = ('role',)
-
-
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
@@ -58,11 +42,6 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'color', 'slug')
-
-
-@admin.register(Follow)
-class FollowAdmin(admin.ModelAdmin):
-    list_display = ('user', 'following')
 
 
 @admin.register(Favorite)

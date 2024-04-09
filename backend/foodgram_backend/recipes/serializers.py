@@ -200,7 +200,7 @@ class PostRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = '__all__'
+        exclude = ('pub_date',)
 
 
 class GetRecipeSerializer(serializers.ModelSerializer):
@@ -232,7 +232,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = '__all__'
+        exclude = ('pub_date',)
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

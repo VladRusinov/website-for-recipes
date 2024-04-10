@@ -12,6 +12,7 @@ ALLOWED_HOSTS = ALLOWED_HOSTS = [
 
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -19,9 +20,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
-    'users.apps.UsersConfig'
     'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig'
 ]
 
 REST_FRAMEWORK = {

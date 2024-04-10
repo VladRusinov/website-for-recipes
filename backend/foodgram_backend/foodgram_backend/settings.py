@@ -20,8 +20,8 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'djoser',
-    'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig'
+    'recipes.apps.RecipesConfig',
 ]
 
 REST_FRAMEWORK = {

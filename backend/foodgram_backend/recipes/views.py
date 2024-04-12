@@ -112,7 +112,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def add_recipe(self, request, pk, model, serializer_class, message):
         """Добавить рецепт в избранное или список покупок."""
-        if Recipe.objects.last().id < int(pk):
+        if not Recipe.objects.filter(id=pk).exists():
             raise ValidationError('Рецепта с таким id не существует')
         recipe = Recipe.objects.get(pk=pk)
         user = self.request.user

@@ -51,6 +51,12 @@ DB_PORT=5432
 SECRET_KEY=ваш SECRET_KEY
 ```
 
+## email и password администратора
+```
+email - Admin@gmail.com
+password - Admin
+```
+
 ## Автор:
 
 Автор - Русинов Влад

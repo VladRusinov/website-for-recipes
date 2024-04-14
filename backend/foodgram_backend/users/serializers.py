@@ -71,12 +71,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RecipeForFollowSerializer(serializers.ModelSerializer):
     """Сериализатор для рецепта в FollowSerializer."""
+
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'cooking_time', 'image',)
 
 
-class FollowSerializer(serializers.ModelSerializer):
+class FollowSerializer(UserSerializer):
     """Сериализатор модели Follow."""
 
     email = serializers.ReadOnlyField(source='following.email')

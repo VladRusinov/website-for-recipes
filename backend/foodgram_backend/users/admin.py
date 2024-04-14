@@ -11,11 +11,9 @@ class UserAdmin(BaseUserAdmin):
         'email',
         'first_name',
         'last_name',
-        'role'
     )
     search_fields = ('username', 'email')
     list_filter = ('username', 'email')
-    list_editable = ('role',)
 
 
 @admin.register(Follow)

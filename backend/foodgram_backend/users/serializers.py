@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import Recipe
+from recipes.utils import is_number
 from users.models import Follow, User
 
 
@@ -99,17 +100,18 @@ class FollowSerializer(UserSerializer):
         ).exists()
 
     def get_recipes(self, obj):
-        """"список рецептов."""
+        """"Список рецептов."""
         recipes = Recipe.objects.filter(author=obj.following)
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
-        if limit:
-            recipes = recipes[:int(limit)]
-        return RecipeForFollowSerializer(recipes, many=True).data
+        if is_number(limit):
+            if limit:
+                recipes = recipes[:int(limit)]
+            return RecipeForFollowSerializer(recipes, many=True).data
 
     def get_recipes_count(self, obj):
         """Колличество рецептов."""
-        return Recipe.objects.filter(author=obj.following).count()
+        return obj.following.recipes.count()
 
     def validate(self, data):
         """Валидация подписки на себя."""

@@ -26,3 +26,12 @@ def download(shop_list):
     response = HttpResponse(content, content_type=content_type)
     response['Content-Disposition'] = f'attachment; filename={file_name}'
     return response
+
+
+def is_number(string):
+    """Проверка того, можно ли перобразовать строку в число."""
+    try:
+        int(string)
+        return True
+    except ValueError:
+        return False

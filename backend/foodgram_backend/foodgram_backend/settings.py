@@ -1,14 +1,18 @@
+from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-@w+0e1kemugcy+&&#lgb8w_o2h$s)gsz%*n7x47i09p%dph!9s'
-DEBUG = True
+load_dotenv()
 
-ALLOWED_HOSTS = ALLOWED_HOSTS = [
-    '84.201.153.136', '127.0.0.1', 'localhost', 'foodgram.myftp.org'
-]
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
+
+DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 INSTALLED_APPS = [

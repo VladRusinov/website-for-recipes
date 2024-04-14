@@ -2,6 +2,8 @@
 ## О проекте
 проект Foodgram это сайт, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Пользователям сайта также доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
+![example workflow]https://github.com/VladRusinov/foodgram-project-react/actions/workflows/main.yml/badge.svg
+
 ## Использованные технологии:
 - Docker
 - PostgreSQL
@@ -41,6 +43,20 @@ pip install -r requirements.txt
 docker compose up
 ```
 
+Сделать миграции и собрать статику:
+
+```
+docker compose exec <backend_container_id> python manage.py migrate
+docker compose exec <backend_container_id> python manage.py collectstatic
+docker compose exec <backend_container_id> cp -r /app/collected_static/. /backend_static/static/ 
+```
+
+загрузить данные из csv файла:
+
+```
+docker compose exec <backend_container_id> python manage.py load_csv_data
+```
+
 ## как заполнить .env:
 ```
 POSTGRES_USER=django_user
@@ -51,11 +67,12 @@ DB_PORT=5432
 SECRET_KEY=ваш SECRET_KEY
 ```
 
-## email и password администратора
+## Ссылки на проект:
 ```
-email - Admin@gmail.com
-password - Admin
+https://foodgram.myftp.org/
+84.201.153.136/api/docs/
 ```
+
 
 ## Автор:
 

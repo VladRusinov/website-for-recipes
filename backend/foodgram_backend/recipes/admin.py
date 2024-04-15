@@ -15,13 +15,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'author',
-        'is_favorited',
-        'is_in_shopping_cart',
         'in_favorite'
-    )
-    list_editable = (
-        'is_favorited',
-        'is_in_shopping_cart',
     )
     search_fields = ('name', 'tags__name', 'author__username')
     list_filter = ('author', 'name', 'tags')

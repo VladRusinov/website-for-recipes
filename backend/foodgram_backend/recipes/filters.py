@@ -1,10 +1,10 @@
 from django_filters.rest_framework import FilterSet, filters
 from rest_framework.filters import SearchFilter
 
-from recipes.models import Recipe, Tag, User
+from recipes.models import Recipe, Tag
 
 
-class IngredientsCustomSearch(SearchFilter):
+class IngredientsSearch(SearchFilter):
     """Поиск по игредиентам."""
 
     search_param = "name"
@@ -13,8 +13,6 @@ class IngredientsCustomSearch(SearchFilter):
 class RecipeFilter(FilterSet):
     """Фильтрация рецептов."""
 
-    author = filters.ModelChoiceFilter(
-        queryset=User.objects.all())
     tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',

@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.validators import ValidationError
 
-from recipes.filters import IngredientsCustomSearch, RecipeFilter
+from recipes.filters import IngredientsSearch, RecipeFilter
 from recipes.models import (
     Ingredient,
     IngredientRecipe,
@@ -37,7 +37,7 @@ class IngredientViewSet(
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (IngredientsCustomSearch,)
+    filter_backends = (IngredientsSearch,)
     search_fields = ('^name',)
     pagination_class = None
 

@@ -141,3 +141,83 @@ class FollowSerializer(serializers.ModelSerializer):
                 message='Нельзя подписаться на одного пользователя дважды'
             ),
         )
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Follow
+        fields = ('user', 'following')
+        validators = (
+            UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=('user', 'following'),
+                message='Нельзя подписаться на одного пользователя дважды'
+            ),
+        )
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        serializer = SubscriptionSerializer(
+            instance,
+            context=context
+        )
+        return serializer.data
+
+    def validate(self, data):
+        user = data.get('user')
+        following = data.get('following')
+        if user == following:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на себя'
+            )
+        return data
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    email = serializers.ReadOnlyField(source='following.email')
+    id = serializers.ReadOnlyField(source='following.id')
+    username = serializers.ReadOnlyField(source='following.username')
+    first_name = serializers.ReadOnlyField(source='following.first_name')
+    last_name = serializers.ReadOnlyField(source='following.last_name')
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Follow
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count'
+        )
+
+    def get_is_subscribed(self, obj):
+        """Проверка подписки."""
+        user = self.context.get('request').user
+        return user.is_authenticated and user.follow.filter(
+            following=obj
+        ).exists()
+
+    def get_recipes(self, obj):
+        """"Список рецептов."""
+        recipes = Recipe.objects.filter(author=obj.following)
+        request = self.context.get('request')
+        context = {'request': request}
+        limit = request.GET.get('recipes_limit')
+        if limit:
+            if is_number(limit):
+                recipes = recipes[:int(limit)]
+        return RecipeForFollowSerializer(
+            recipes, many=True, context=context
+        ).data
+
+    def get_recipes_count(self, obj):
+        """Колличество рецептов."""
+        return obj.following.recipes.count()

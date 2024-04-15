@@ -105,12 +105,12 @@ class FollowSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         context = {'request': request}
         limit = request.GET.get('recipes_limit')
-        if is_number(limit):
-            if limit:
+        if limit:
+            if is_number(limit):
                 recipes = recipes[:int(limit)]
-            return RecipeForFollowSerializer(
-                recipes, many=True, context=context
-            ).data
+        return RecipeForFollowSerializer(
+            recipes, many=True, context=context
+        ).data
 
     def get_recipes_count(self, obj):
         """Колличество рецептов."""

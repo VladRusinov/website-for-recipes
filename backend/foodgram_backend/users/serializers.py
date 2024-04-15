@@ -41,8 +41,8 @@ class UserSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         """Проверка подписки."""
         user = self.context.get('request').user
-        return Follow.objects.filter(
-            following=obj.following, user=user
+        return user.is_authenticated and user.following.filter(
+            following=obj
         ).exists()
 
     def create(self, validated_data):

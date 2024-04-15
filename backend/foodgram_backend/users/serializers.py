@@ -125,7 +125,7 @@ class SubscriptionSerializer(UserSerializer):
 
     class Meta:
         model = Follow
-        fields = UserSerializer.Meta.fields + ('recipes', 'recipe_count',)
+        fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count',)
 
     def get_is_subscribed(self, obj):
         """Проверка подписки."""

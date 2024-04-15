@@ -84,7 +84,6 @@ class SubscribeView(views.APIView):
         data = {'following': following.id, 'user': user.id}
         serializer = SubscribeSerializer(
             data=data,
-            many=True,
             context={'request': request}
         )
         serializer.is_valid(raise_exception=True)

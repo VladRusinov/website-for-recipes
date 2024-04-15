@@ -90,7 +90,7 @@ class SubscribeView(views.APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(
-            data=serializer.data[0], status=status.HTTP_201_CREATED
+            data=serializer.data, status=status.HTTP_201_CREATED
         )
 
     def delete(self, request, pk):

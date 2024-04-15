@@ -63,6 +63,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class SubscriptionViewSet(ListAPIView):
+    """ViewSet модели Subscription."""
+
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
@@ -73,6 +75,8 @@ class SubscriptionViewSet(ListAPIView):
 
 
 class SubscribeView(views.APIView):
+    """ViewSet модели Subscribe."""
+
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
 

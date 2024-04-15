@@ -3,6 +3,7 @@ certifi==2023.11.17
 cffi==1.16.0
 chardet==5.2.0
 charset-normalizer==3.3.2
+colorama==0.4.6
 coreapi==2.3.3
 coreschema==0.0.4
 cryptography==41.0.7
@@ -33,6 +34,7 @@ six==1.16.0
 social-auth-app-django==4.0.0
 social-auth-core==4.5.1
 sqlparse==0.4.4
+tqdm==4.66.2
 typing_extensions==4.8.0
 uritemplate==4.1.1
 urllib3==2.1.0

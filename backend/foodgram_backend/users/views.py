@@ -5,6 +5,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.validators import ValidationError
 
 from recipes.pagination import CustomPagination
 from users.models import Follow, User
@@ -78,13 +79,19 @@ class SubscribeView(views.APIView):
     def post(self, request, pk):
         following = get_object_or_404(User, pk=pk)
         user = self.request.user
+        if user == following:
+            raise ValidationError('Нельзя подписываться на себя')
         data = {'following': following.id, 'user': user.id}
         serializer = SubscribeSerializer(
-            data=data, context={'request': request}
+            data=data,
+            many=True,
+            context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            data=serializer.data[0], status=status.HTTP_201_CREATED
+        )
 
     def delete(self, request, pk):
         following = get_object_or_404(User, pk=pk)

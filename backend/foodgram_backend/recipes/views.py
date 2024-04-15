@@ -17,7 +17,6 @@ from recipes.models import (
 )
 from recipes.serializers import (
     GetRecipeSerializer,
-    IngredientRecipeSerializer,
     IngredientSerializer,
     FavoriteSerializer,
     PostRecipeSerializer,
@@ -147,10 +146,3 @@ class TagViewSet(
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
-
-
-class IngredientRecipeViewSet(viewsets.ModelViewSet):
-    """ViewSet модели IngredientRecipe."""
-
-    queryset = IngredientRecipe.objects.all()
-    serializer_class = IngredientRecipeSerializer

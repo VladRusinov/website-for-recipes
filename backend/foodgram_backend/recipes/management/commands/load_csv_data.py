@@ -9,7 +9,6 @@ class Command(BaseCommand):
     help = "Loads data from csv files"
 
     def handle(self, *args, **options):
-        self.stdout.write("loading data", ending='')
         for row in tqdm(
             (csv.reader(open(
                 'data/ingredients.csv', encoding='utf-8'

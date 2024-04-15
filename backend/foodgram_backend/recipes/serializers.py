@@ -101,7 +101,7 @@ class PostRecipeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serializer = super().to_representation(instance)
         serializer['ingredients'] = IngredientRecipeSerializer(
-            instance.ingredientRecipes.all(), many=True
+            instance.ingredient_recipes.all(), many=True
         ).data
         serializer['tags'] = TagSerializer(instance.tags.all(), many=True).data
         return serializer

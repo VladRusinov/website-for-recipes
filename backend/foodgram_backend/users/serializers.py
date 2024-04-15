@@ -42,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         """Проверка подписки."""
         user = self.context.get('request').user
         return user.is_authenticated and user.follow.filter(
-            following=obj.following
+            following=obj
         ).exists()
 
     def create(self, validated_data):
@@ -78,7 +78,7 @@ class RecipeForFollowSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'cooking_time', 'image',)
 
 
-class FollowSerializer(UserSerializer):
+class FollowSerializer(serializers.ModelSerializer):
     """Сериализатор модели Follow."""
 
     email = serializers.ReadOnlyField(source='following.email')

@@ -56,10 +56,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return PostRecipeSerializer
         return GetRecipeSerializer
 
-    def perform_create(self, serializer):
-        """Сохранение автора рецепта."""
-        serializer.save(author=self.request.user)
-
     @action(
         detail=True,
         methods=['post', 'delete'],

@@ -143,7 +143,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientRecipeSerializer(
         many=True,
         read_only=True,
-        source='ingredientRecipes',
+        source='ingredient_recipes',
     )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()

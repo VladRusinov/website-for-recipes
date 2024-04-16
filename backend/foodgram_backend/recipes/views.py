@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, permissions, status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import (
@@ -30,11 +30,7 @@ from recipes.serializers import (
 from recipes.utils import download
 
 
-class IngredientViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet модели Ingredient."""
 
     queryset = Ingredient.objects.all()
@@ -76,8 +72,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_recipe(
                 request, pk, Favorite, FavoriteSerializer, message
             )
-        else:
-            return self.delete_recipe(request, pk, Favorite, message)
+        return self.delete_recipe(request, pk, Favorite, message)
 
     @action(
         detail=True,
@@ -91,8 +86,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_recipe(
                 request, pk, ShoppingCart, ShoppingCartSerializer, message
             )
-        else:
-            return self.delete_recipe(request, pk, ShoppingCart, message)
+        return self.delete_recipe(request, pk, ShoppingCart, message)
 
     @action(
         detail=False,
@@ -120,8 +114,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if model.objects.filter(recipe=recipe, user=user).exists():
             raise ValidationError(f'Рецепт уже добавлен в {message}')
         serializer = serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(user=user, recipe=recipe)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user, recipe=recipe)
         return Response(
             data=serializer.data,
             status=status.HTTP_201_CREATED
@@ -138,11 +132,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TagViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-):
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet модели Tag."""
 
     queryset = Tag.objects.all()

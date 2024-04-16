@@ -71,7 +71,7 @@ class PostRecipeSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     image = Base64ImageField()
 
-    def add_ingredient(obj, ingredients):
+    def add_ingredient(self, obj, ingredients):
         """Добавление игредиентов."""
         ing_recipes = []
         for ingredient in ingredients:

@@ -2,7 +2,7 @@
 ## О проекте
 проект Foodgram это сайт, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Пользователям сайта также доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
-![example workflow]https://github.com/VladRusinov/foodgram-project-react/actions/workflows/main.yml/badge.svg
+![example workflow](https://github.com/VladRusinov/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 ## Использованные технологии:
 - Docker

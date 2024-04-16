@@ -7,8 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.validators import ValidationError
 
-from recipes.pagination import CustomPagination
 from users.models import Follow, User
+from recipes.pagination import Pagination
 from users.serializers import (
     CreateUserSerializer,
     SubscribeSerializer,
@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = CustomPagination
+    pagination_class = Pagination
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -66,7 +66,7 @@ class SubscriptionViewSet(ListAPIView):
     """ViewSet модели Subscription."""
 
     serializer_class = SubscriptionSerializer
-    pagination_class = CustomPagination
+    pagination_class = Pagination
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -77,7 +77,7 @@ class SubscriptionViewSet(ListAPIView):
 class SubscribeView(views.APIView):
     """ViewSet модели Subscribe."""
 
-    pagination_class = CustomPagination
+    pagination_class = Pagination
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, pk):

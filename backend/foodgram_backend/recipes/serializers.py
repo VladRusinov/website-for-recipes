@@ -71,6 +71,10 @@ class PostRecipeSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     image = Base64ImageField()
 
+    class Meta:
+        model = Recipe
+        exclude = ('pub_date',)
+
     def add_ingredient(self, obj, ingredients):
         """Добавление игредиентов."""
         ing_recipes = []
@@ -101,12 +105,9 @@ class PostRecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
-        serializer = GetRecipeSerializer
-        serializer['ingredients'] = IngredientRecipeSerializer(
-            instance.ingredient_recipes.all(), many=True
-        ).data
-        serializer['tags'] = TagSerializer(instance.tags.all(), many=True).data
-        return serializer
+        request = self.context.get('request')
+        context = {'request': request}
+        return GetRecipeSerializer(instance, context=context).data
 
     def validate(self, data):
         """Валидация."""
@@ -131,10 +132,6 @@ class PostRecipeSerializer(serializers.ModelSerializer):
         if data['image'] is None:
             raise serializers.ValidationError('Добавьте изображение')
         return data
-
-    class Meta:
-        model = Recipe
-        exclude = ('pub_date',)
 
 
 class GetRecipeSerializer(serializers.ModelSerializer):

@@ -111,6 +111,11 @@ class PostRecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Валидация."""
+        ingredients = [ingredient['id'] for ingredient in data['ingredients']]
+        if len(data['tags']) == 0 or len(data['ingredients']) == 0:
+            raise serializers.ValidationError(
+                'нельзя создать рецепт без ингредиентов или тега'
+            )
         if 'ingredients' not in data:
             raise serializers.ValidationError('Добавьте ингредиенты')
         if 'tags' not in data:
@@ -119,15 +124,9 @@ class PostRecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'нельзя добавлять одинаковые теги'
             )
-        if len(
-            set([ingredient['id'] for ingredient in data['ingredients']])
-        ) != len([ingredient['id'] for ingredient in data['ingredients']]):
+        if len(set(ingredients)) != len(ingredients):
             raise serializers.ValidationError(
                 'нельзя добавлять одинаковые ингредиенты'
-            )
-        if len(data['tags']) == 0 or len(data['ingredients']) == 0:
-            raise serializers.ValidationError(
-                'нельзя создать рецепт без ингредиентов или тега'
             )
         if data['image'] is None:
             raise serializers.ValidationError('Добавьте изображение')
@@ -150,9 +149,10 @@ class GetRecipeSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, obj):
         """Проверка того, находится ли рецепт в избранном."""
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Favorite.objects.filter(recipe=obj, user=user).exists()
+        return (
+            user.is_authenticated
+            and Recipe.favorites.filter(recipe=obj, user=user).exists()
+        )
 
     def get_is_in_shopping_cart(self, obj):
         """Проверка того, находится ли рецепт в списке покупок."""

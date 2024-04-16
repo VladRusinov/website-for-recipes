@@ -10,12 +10,23 @@ from recipes.models import (
 )
 
 
+class IngredientsInLine(admin.TabularInline):
+    model = Recipe.ingredients.through
+
+
+class TagsInLine(admin.TabularInline):
+    model = Recipe.tags.through
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'author',
         'in_favorite'
+    )
+    inlines = (
+        IngredientsInLine, TagsInLine
     )
     search_fields = ('name', 'tags__name', 'author__username')
     list_filter = ('author', 'name', 'tags')

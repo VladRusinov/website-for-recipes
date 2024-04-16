@@ -146,6 +146,10 @@ class GetRecipeSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Recipe
+        exclude = ('pub_date',)
+
     def get_is_favorited(self, obj):
         """Проверка того, находится ли рецепт в избранном."""
         user = self.context.get('request').user
@@ -157,13 +161,10 @@ class GetRecipeSerializer(serializers.ModelSerializer):
     def get_is_in_shopping_cart(self, obj):
         """Проверка того, находится ли рецепт в списке покупок."""
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return ShoppingCart.objects.filter(recipe=obj, user=user).exists()
-
-    class Meta:
-        model = Recipe
-        exclude = ('pub_date',)
+        return (
+            user.is_authenticated
+            and user.shopping_carts.filter(recipe=obj).exists()
+        )
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

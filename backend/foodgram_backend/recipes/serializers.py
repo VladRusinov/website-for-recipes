@@ -71,23 +71,23 @@ class PostRecipeSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     image = Base64ImageField()
 
+    def add_ingredient(obj, ingredients):
+        """Добавление игредиентов."""
+        ing_recipes = []
+        for ingredient in ingredients:
+            ingredient_recipe = IngredientRecipe(
+                ingredient=ingredient['id'],
+                recipe=obj,
+                amount=ingredient['amount']
+            )
+            ing_recipes.append(ingredient_recipe)
+        return IngredientRecipe.objects.bulk_create(ing_recipes)
+
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
         recipe = Recipe.objects.create(**validated_data)
-        ing_recipes = []
-        for ingredient in ingredients:
-            if ingredient['amount'] <= 0:
-                raise serializers.ValidationError(
-                    'Колличество ингредиентов должно быть больше 0'
-                )
-            ingredient_recipe = IngredientRecipe(
-                ingredient=ingredient['id'],
-                recipe=recipe,
-                amount=ingredient['amount']
-            )
-            ing_recipes.append(ingredient_recipe)
-        IngredientRecipe.objects.bulk_create(ing_recipes)
+        self.add_ingredient(recipe, ingredients)
         recipe.tags.set(tags)
         return recipe
 
@@ -96,12 +96,7 @@ class PostRecipeSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         instance.ingredients.clear()
-        for ingredient in ingredients:
-            IngredientRecipe.objects.create(
-                ingredient=ingredient['id'],
-                recipe=instance,
-                amount=ingredient['amount']
-            )
+        self.add_ingredient(instance, ingredients)
         instance.tags.set(tags)
         return super().update(instance, validated_data)
 

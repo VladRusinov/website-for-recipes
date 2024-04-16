@@ -22,12 +22,12 @@ from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import (
     GetRecipeSerializer,
     IngredientSerializer,
-    FavoriteSerializer,
     PostRecipeSerializer,
-    ShoppingCartSerializer,
     TagSerializer,
 )
 from recipes.utils import download
+
+from users.serializers import RecipeForFollowSerializer
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -69,9 +69,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Избранное."""
         message = 'избранное'
         if request.method == 'POST':
-            return self.add_recipe(
-                request, pk, Favorite, FavoriteSerializer, message
-            )
+            return self.add_recipe(request, pk, Favorite)
         return self.delete_recipe(request, pk, Favorite, message)
 
     @action(
@@ -83,9 +81,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Список покупок."""
         message = 'список покупок'
         if request.method == 'POST':
-            return self.add_recipe(
-                request, pk, ShoppingCart, ShoppingCartSerializer, message
-            )
+            return self.add_recipe(request, pk, ShoppingCart)
         return self.delete_recipe(request, pk, ShoppingCart, message)
 
     @action(
@@ -105,21 +101,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         return download(ingredients)
 
-    def add_recipe(self, request, pk, model, serializer_class, message):
+    def add_recipe(self, request, pk, model):
         """Добавить рецепт в избранное или список покупок."""
-        if not Recipe.objects.filter(id=pk).exists():
-            raise ValidationError('Рецепта с таким id не существует')
-        recipe = Recipe.objects.get(pk=pk)
         user = self.request.user
-        if model.objects.filter(recipe=recipe, user=user).exists():
-            raise ValidationError(f'Рецепт уже добавлен в {message}')
-        serializer = serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=user, recipe=recipe)
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_201_CREATED
-        )
+        if model.objects.filter(
+            user=user, recipe__id=pk
+        ).exists():
+            raise ValidationError(
+                'Рецепт уже добавлен в избранное, либо корзину'
+            )
+        recipe = get_object_or_404(Recipe, id=pk)
+        model.objects.create(user=user, recipe=recipe)
+        serializer = RecipeForFollowSerializer(recipe)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_recipe(self, request, pk, model, message):
         """Удалить рецепт из избранного или списка покупок."""

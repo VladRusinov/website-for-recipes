@@ -5,9 +5,7 @@ from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (
     Ingredient,
     IngredientRecipe,
-    Favorite,
     Recipe,
-    ShoppingCart,
     Tag,
 )
 from users.serializers import UserSerializer
@@ -165,53 +163,3 @@ class GetRecipeSerializer(serializers.ModelSerializer):
             user.is_authenticated
             and user.shopping_carts.filter(recipe=obj).exists()
         )
-
-
-class FavoriteSerializer(serializers.ModelSerializer):
-    """Сериализатор модели Favorite."""
-
-    name = serializers.CharField(
-        source='recipe.name',
-        read_only=True
-    )
-    image = serializers.ImageField(
-        source='recipe.image',
-        read_only=True
-    )
-    cooking_time = serializers.IntegerField(
-        source='recipe.cooking_time',
-        read_only=True
-    )
-    id = serializers.PrimaryKeyRelatedField(
-        source='recipe',
-        read_only=True
-    )
-
-    class Meta:
-        model = Favorite
-        fields = ('id', 'name', 'image', 'cooking_time')
-
-
-class ShoppingCartSerializer(serializers.ModelSerializer):
-    """Сериализатор модели ShoppingCart."""
-
-    name = serializers.CharField(
-        source='recipe.name',
-        read_only=True
-    )
-    image = serializers.ImageField(
-        source='recipe.image',
-        read_only=True
-    )
-    cooking_time = serializers.IntegerField(
-        source='recipe.cooking_time',
-        read_only=True
-    )
-    id = serializers.PrimaryKeyRelatedField(
-        source='recipe',
-        read_only=True
-    )
-
-    class Meta:
-        model = ShoppingCart
-        fields = ('id', 'name', 'image', 'cooking_time')

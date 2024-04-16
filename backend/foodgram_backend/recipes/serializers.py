@@ -53,6 +53,13 @@ class AddIngredientSerializer(serializers.ModelSerializer):
         model = IngredientRecipe
         fields = ('id', 'amount')
 
+    def validate(self, data):
+        if data['amount'] <= 0:
+            raise serializers.ValidationError(
+                'Колличество ингредиентов должно быть больше 0'
+            )
+        return data
+
 
 class PostRecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для Post запроса модели Recipe."""
@@ -68,16 +75,19 @@ class PostRecipeSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
         recipe = Recipe.objects.create(**validated_data)
+        ing_recipes = []
         for ingredient in ingredients:
             if ingredient['amount'] <= 0:
                 raise serializers.ValidationError(
                     'Колличество ингредиентов должно быть больше 0'
                 )
-            IngredientRecipe.objects.create(
+            ingredient_recipe = IngredientRecipe(
                 ingredient=ingredient['id'],
                 recipe=recipe,
                 amount=ingredient['amount']
             )
+            ing_recipes.append(ingredient_recipe)
+        IngredientRecipe.objects.bulk_create(ing_recipes)
         recipe.tags.set(tags)
         return recipe
 
@@ -87,10 +97,6 @@ class PostRecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         instance.ingredients.clear()
         for ingredient in ingredients:
-            if ingredient['amount'] <= 0:
-                raise serializers.ValidationError(
-                    'Колличество ингредиентов должно быть больше 0'
-                )
             IngredientRecipe.objects.create(
                 ingredient=ingredient['id'],
                 recipe=instance,

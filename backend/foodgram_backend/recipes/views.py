@@ -3,7 +3,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticated, IsAuthenticatedOrReadOnly
+)
 from rest_framework.validators import ValidationError
 
 from recipes.filters import IngredientsSearch, RecipeFilter
@@ -23,7 +25,7 @@ from recipes.serializers import (
     ShoppingCartSerializer,
     TagSerializer,
 )
-from recipes.pagination import CustomPagination
+from recipes.pagination import Pagination
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.utils import download
 
@@ -47,8 +49,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    pagination_class = CustomPagination
-    permission_classes = (IsAuthorOrReadOnly,)
+    pagination_class = Pagination
+    permission_classes = (IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         return Recipe.objects.all()

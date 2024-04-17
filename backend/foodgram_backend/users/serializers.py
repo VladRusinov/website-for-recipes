@@ -120,7 +120,6 @@ class SubscriptionSerializer(UserSerializer):
     recipes_count = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
-        read_only_fields = ('email', 'username', 'first_name', 'last_name')
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count',)
 
     def get_is_subscribed(self, obj):

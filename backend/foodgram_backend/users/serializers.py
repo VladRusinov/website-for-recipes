@@ -135,7 +135,7 @@ class SubscriptionSerializer(UserSerializer):
         request = self.context.get('request')
         context = {'request': request}
         limit = request.GET.get('recipes_limit')
-        if limit and limit.is_digit():
+        if limit and limit.isdigit():
             recipes = recipes[:int(limit)]
         return RecipeForFollowSerializer(
             recipes, many=True, context=context

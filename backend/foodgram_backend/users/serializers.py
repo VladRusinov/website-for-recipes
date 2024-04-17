@@ -115,6 +115,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(UserSerializer):
     """Сериализатор подписок."""
 
+    id = serializers.ReadOnlyField(source='following.id')
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 

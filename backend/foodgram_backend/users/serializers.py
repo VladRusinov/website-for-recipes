@@ -97,7 +97,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         context = {'request': request}
         serializer = SubscriptionSerializer(
-            request.user,
+            instance.author,
             context=context
         )
         return serializer.data
@@ -126,7 +126,7 @@ class SubscriptionSerializer(UserSerializer):
         """Проверка подписки."""
         user = self.context.get('request').user
         return user.is_authenticated and user.follow.filter(
-            following=obj
+            following=obj.following
         ).exists()
 
     def get_recipes(self, obj):

@@ -115,7 +115,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(UserSerializer):
     """Сериализатор подписок."""
 
-    is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
@@ -127,7 +126,7 @@ class SubscriptionSerializer(UserSerializer):
         """Проверка подписки."""
         user = self.context.get('request').user
         return user.is_authenticated and user.follow.filter(
-            following=obj.following
+            following=obj
         ).exists()
 
     def get_recipes(self, obj):

@@ -2,23 +2,11 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import Recipe
-from recipes.utils import is_number
 from users.models import Follow, User
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
     """Сериализатор для создания пользователя."""
-
-    def create(self, validated_data):
-        user = User(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
 
     class Meta:
         model = User
@@ -32,11 +20,33 @@ class CreateUserSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {'password': {'write_only': True}}
 
+    def create(self, validated_data):
+        user = User(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор модели User."""
 
     is_subscribed = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed'
+        )
 
     def get_is_subscribed(self, obj):
         """Проверка подписки."""
@@ -55,17 +65,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed'
-        )
 
 
 class RecipeForFollowSerializer(serializers.ModelSerializer):
@@ -112,17 +111,12 @@ class SubscribeSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(UserSerializer):
     """Сериализатор подписок."""
 
-    email = serializers.ReadOnlyField(source='following.email')
-    id = serializers.ReadOnlyField(source='following.id')
-    username = serializers.ReadOnlyField(source='following.username')
-    first_name = serializers.ReadOnlyField(source='following.first_name')
-    last_name = serializers.ReadOnlyField(source='following.last_name')
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = Follow
+        model = User
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count',)
 
     def get_is_subscribed(self, obj):
@@ -138,9 +132,8 @@ class SubscriptionSerializer(UserSerializer):
         request = self.context.get('request')
         context = {'request': request}
         limit = request.GET.get('recipes_limit')
-        if limit:
-            if is_number(limit):
-                recipes = recipes[:int(limit)]
+        if limit and limit.is_digit():
+            recipes = recipes[:int(limit)]
         return RecipeForFollowSerializer(
             recipes, many=True, context=context
         ).data

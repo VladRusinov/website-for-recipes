@@ -5,7 +5,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.validators import ValidationError
 
 from users.models import Follow, User
 from recipes.pagination import Pagination
@@ -55,11 +54,10 @@ class UserViewSet(viewsets.ModelViewSet):
             data=request.data,
             context={'request': request}
         )
-        if serializer.is_valid(raise_exception=True):
-            self.request.user.set_password(serializer.data["new_password"])
-            self.request.user.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        self.request.user.set_password(serializer.data["new_password"])
+        self.request.user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SubscriptionViewSet(ListAPIView):
@@ -83,8 +81,6 @@ class SubscribeView(views.APIView):
     def post(self, request, pk):
         following = get_object_or_404(User, pk=pk)
         user = self.request.user
-        if user == following:
-            raise ValidationError('Нельзя подписываться на себя')
         data = {'following': following.id, 'user': user.id}
         serializer = SubscribeSerializer(
             data=data,

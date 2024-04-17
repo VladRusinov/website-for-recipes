@@ -37,7 +37,7 @@ class User(AbstractUser):
                 name='no_me_username'
             )
         ]
-        ordering = ['id']
+        ordering = ['username']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
@@ -62,7 +62,7 @@ class Follow(models.Model):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['user']
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [

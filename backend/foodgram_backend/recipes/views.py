@@ -26,7 +26,6 @@ from recipes.serializers import (
     TagSerializer,
 )
 from recipes.utils import download
-
 from users.serializers import RecipeForFollowSerializer
 
 

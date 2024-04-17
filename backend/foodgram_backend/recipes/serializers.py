@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework import serializers
 
 from recipes.models import (
     Ingredient,
@@ -110,15 +109,15 @@ class PostRecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Валидация."""
+        if 'ingredients' not in data:
+            raise serializers.ValidationError('Добавьте ингредиенты')
+        if 'tags' not in data:
+            raise serializers.ValidationError('Добавьте теги')
         ingredients = [ingredient['id'] for ingredient in data['ingredients']]
         if len(data['tags']) == 0 or len(data['ingredients']) == 0:
             raise serializers.ValidationError(
                 'нельзя создать рецепт без ингредиентов или тега'
             )
-        if 'ingredients' not in data:
-            raise serializers.ValidationError('Добавьте ингредиенты')
-        if 'tags' not in data:
-            raise serializers.ValidationError('Добавьте теги')
         if len(set(data['tags'])) != len(data['tags']):
             raise serializers.ValidationError(
                 'нельзя добавлять одинаковые теги'

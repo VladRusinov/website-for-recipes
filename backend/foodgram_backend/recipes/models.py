@@ -1,5 +1,4 @@
 from colorfield.fields import ColorField
-
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -21,7 +20,7 @@ class Tag(models.Model):
     slug = models.SlugField('Слаг', unique=True, max_length=RECIPES_MAX_LENGTH)
 
     class Meta:
-        ordering = ['id']
+        ordering = ['name']
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -38,7 +37,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['name']
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
         constraints = [
@@ -93,7 +92,6 @@ class IngredientRecipe(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
-        related_name='recipes_ingredients'
     )
     amount = models.PositiveSmallIntegerField(
         'Колличество',
@@ -103,11 +101,10 @@ class IngredientRecipe(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name='ingredient_recipes'
     )
 
     class Meta:
-        ordering = ['id']
+        default_related_name = 'ingredient_recipes'
         verbose_name = 'Ингредиент для рецепта'
         verbose_name_plural = 'Ингредиенты для рецепта'
 
@@ -129,7 +126,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['user']
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         default_related_name = 'favorites'
@@ -158,7 +155,7 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['user']
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         default_related_name = 'shopping_carts'

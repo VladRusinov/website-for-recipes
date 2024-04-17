@@ -31,6 +31,10 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    def validate(self, data):
+        if data['username'].lower() == 'me':
+            raise serializers.ValidationError('Недопустимое имя пользователя')
+
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор модели User."""

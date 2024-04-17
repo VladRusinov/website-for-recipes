@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -96,8 +97,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
+        user = get_object_or_404(User, id=request.user.id)
         serializer = SubscriptionSerializer(
-            request.user,
+            user,
             context=context
         )
         return serializer.data

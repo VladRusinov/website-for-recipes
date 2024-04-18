@@ -126,7 +126,7 @@ class SubscriptionSerializer(UserSerializer):
         """Проверка подписки."""
         user = self.context.get('request').user
         return user.is_authenticated and user.follow.filter(
-            following=obj.following
+            following=obj
         ).exists()
 
     def get_recipes(self, obj):

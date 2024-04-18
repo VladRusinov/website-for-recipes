@@ -167,7 +167,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
         )
 
 
-class FavoriteSerializer(serializers.ModelSerializer): 
+class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор модели Favorite."""
 
     class Meta:

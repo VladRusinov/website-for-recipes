@@ -55,13 +55,6 @@ class UserSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         """Проверка подписки."""
         user = self.context.get('request').user
-        print(f'{obj} - object')
-        print(f'{user.follow.all()} + follow.all()')
-        print(
-            user.is_authenticated and user.follow.filter(
-                following=obj
-            ).exists()
-        )
         return user.is_authenticated and user.follow.filter(
             following=obj
         ).exists()
@@ -132,25 +125,15 @@ class SubscriptionSerializer(UserSerializer):
     def get_recipes(self, obj):
         """"Список рецептов."""
         recipes = Recipe.objects.filter(author=obj)
-        print(Recipe.objects.all())
-        print(obj)
         request = self.context.get('request')
         context = {'request': request}
         limit = request.GET.get('recipes_limit')
         if limit and limit.isdigit():
             recipes = recipes[:int(limit)]
-        print(recipes)
-        print(
-            RecipeForFollowSerializer(
-                recipes, many=True, context=context
-            ).data
-        )
         return RecipeForFollowSerializer(
             recipes, many=True, context=context
         ).data
 
     def get_recipes_count(self, obj):
         """Колличество рецептов."""
-        print(obj.recipes.all())
-        print(obj.recipes.count())
         return obj.recipes.count()

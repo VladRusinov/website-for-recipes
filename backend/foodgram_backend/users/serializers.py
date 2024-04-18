@@ -98,7 +98,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         context = {'request': request}
         user = instance.following
-        serializer = SubscriptionSerializer(
+        serializer = UserSerializer(
             user,
             context=context
         )

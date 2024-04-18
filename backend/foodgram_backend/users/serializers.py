@@ -4,6 +4,8 @@ from rest_framework.validators import UniqueTogetherValidator
 from recipes.models import Recipe
 from users.models import Follow, User
 
+import inspect
+
 
 class CreateUserSerializer(serializers.ModelSerializer):
     """Сериализатор для создания пользователя."""
@@ -97,6 +99,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         context = {'request': request}
         print(f"{instance.following} dsdvevewewewe")
+        print(f"{inspect.signature(SubscribeSerializer)} *************")
         serializer = SubscriptionSerializer(
             instance.following,
             context=context

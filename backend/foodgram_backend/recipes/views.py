@@ -20,13 +20,14 @@ from recipes.models import (
 from recipes.pagination import Pagination
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import (
+    FavoriteSerializer,
     GetRecipeSerializer,
     IngredientSerializer,
     PostRecipeSerializer,
+    ShoppingCartSerializer,
     TagSerializer,
 )
 from recipes.utils import download
-from users.serializers import RecipeForFollowSerializer
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -64,7 +65,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Избранное."""
         message = 'избранное'
         if request.method == 'POST':
-            return self.add_recipe(request, pk, Favorite)
+            return self.add_recipe(request, pk, FavoriteSerializer)
         return self.delete_recipe(request, pk, Favorite, message)
 
     @action(
@@ -76,7 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Список покупок."""
         message = 'список покупок'
         if request.method == 'POST':
-            return self.add_recipe(request, pk, ShoppingCart)
+            return self.add_recipe(request, pk, ShoppingCartSerializer)
         return self.delete_recipe(request, pk, ShoppingCart, message)
 
     @action(
@@ -96,18 +97,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         return download(ingredients)
 
-    def add_recipe(self, request, pk, model):
+    def add_recipe(self, request, pk, serializer_class):
         """Добавить рецепт в избранное или список покупок."""
         user = self.request.user
-        if model.objects.filter(
-            user=user, recipe__id=pk
-        ).exists():
-            raise ValidationError(
-                'Рецепт уже добавлен в избранное, либо корзину'
-            )
-        recipe = get_object_or_404(Recipe, id=pk)
-        model.objects.create(user=user, recipe=recipe)
-        serializer = RecipeForFollowSerializer(recipe)
+        serializer = serializer_class(user=user.id, recipe=pk)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_recipe(self, request, pk, model, message):

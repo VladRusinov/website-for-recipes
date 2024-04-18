@@ -2,12 +2,14 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.models import (
+    Favorite,
     Ingredient,
     IngredientRecipe,
     Recipe,
+    ShoppingCart,
     Tag,
 )
-from users.serializers import UserSerializer
+from users.serializers import RecipeForFollowSerializer, UserSerializer
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -163,3 +165,29 @@ class GetRecipeSerializer(serializers.ModelSerializer):
             user.is_authenticated
             and user.shopping_carts.filter(recipe=obj).exists()
         )
+
+
+class FavoriteSerializer(serializers.ModelSerializer): 
+    """Сериализатор модели Favorite."""
+
+    class Meta:
+        model = Favorite
+        fields = ('recipe', 'user')
+
+    def to_representation(self, instance):
+        return RecipeForFollowSerializer(instance.recipe, context={
+            'request': self.context.get('request')
+        }).data
+
+
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    """Сериализатор модели ShoppingCart."""
+
+    class Meta:
+        model = ShoppingCart
+        fields = ('recipe', 'user')
+
+    def to_representation(self, instance):
+        return RecipeForFollowSerializer(instance.recipe, context={
+            'request': self.context.get('request')
+        }).data

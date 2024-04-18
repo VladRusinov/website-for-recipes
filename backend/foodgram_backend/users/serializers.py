@@ -125,7 +125,6 @@ class SubscriptionSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         """Проверка подписки."""
         user = self.context.get('request').user
-        print(obj)
         return user.is_authenticated and user.follow.filter(
             following=obj
         ).exists()

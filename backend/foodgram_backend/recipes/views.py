@@ -100,7 +100,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def add_recipe(self, request, pk, serializer_class):
         """Добавить рецепт в избранное или список покупок."""
         user = self.request.user
-        serializer = serializer_class(user=user.id, recipe=pk)
+        serializer = serializer_class(
+            user=user.id, recipe=pk, context={'request': request}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

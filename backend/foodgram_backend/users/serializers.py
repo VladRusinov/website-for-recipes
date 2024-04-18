@@ -131,8 +131,7 @@ class SubscriptionSerializer(UserSerializer):
 
     def get_recipes(self, obj):
         """"Список рецептов."""
-        following_users = User.objects.filter(follow__user=obj)
-        recipes = Recipe.objects.filter(author__in=following_users)
+        recipes = Recipe.objects.filter(author=obj)
         request = self.context.get('request')
         context = {'request': request}
         limit = request.GET.get('recipes_limit')
@@ -143,8 +142,5 @@ class SubscriptionSerializer(UserSerializer):
         ).data
 
     def get_recipes_count(self, obj):
-        following_users = User.objects.filter(follow__user=obj)
-        total_recipes = 0
-        for user in following_users:
-            total_recipes += user.recipes.count()
-        return total_recipes
+        """Колличество рецептов."""
+        return obj.recipes.count()

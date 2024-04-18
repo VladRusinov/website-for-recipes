@@ -96,7 +96,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
-        print(instance.following)
+        print(f"{instance.following} dsdvevewewewe")
         serializer = SubscriptionSerializer(
             instance.following,
             context=context

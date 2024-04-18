@@ -70,7 +70,7 @@ SECRET_KEY=ваш SECRET_KEY
 ## Ссылки на проект:
 ```
 https://foodgram.myftp.org/
-84.201.153.136/api/docs/
+https://foodgram.myftp.org/api/docs/
 ```
 
 

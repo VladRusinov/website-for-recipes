@@ -32,8 +32,6 @@ services:
       - "8000:80"
     env_file: .env
     volumes:
-      - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
       - static:/staticfiles/
       - media:/app/media/recipes/images
     depends_on:

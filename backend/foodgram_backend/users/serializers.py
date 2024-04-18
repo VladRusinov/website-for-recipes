@@ -122,13 +122,6 @@ class SubscriptionSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count',)
 
-    def get_is_subscribed(self, obj):
-        """Проверка подписки."""
-        user = self.context.get('request').user
-        return user.is_authenticated and user.follow.filter(
-            following=obj
-        ).exists()
-
     def get_recipes(self, obj):
         """"Список рецептов."""
         recipes = Recipe.objects.filter(author=obj)

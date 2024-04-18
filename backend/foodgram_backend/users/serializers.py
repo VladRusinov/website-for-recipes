@@ -143,5 +143,8 @@ class SubscriptionSerializer(UserSerializer):
         ).data
 
     def get_recipes_count(self, obj):
-        """Колличество рецептов."""
-        return obj.following.recipes.count()
+        following_users = User.objects.filter(follow__user=obj)
+        total_recipes = 0
+        for user in following_users:
+            total_recipes += user.recipes.count()
+        return total_recipes

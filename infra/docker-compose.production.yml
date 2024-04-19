@@ -20,6 +20,7 @@ services:
     volumes:
       - static:/backend_static
       - media:/app/media/recipes/images
+      - docs:/app/docs/
   frontend:
     image: vladrusinov/foodgram_frontend
     depends_on:

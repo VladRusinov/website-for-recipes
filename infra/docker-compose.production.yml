@@ -17,13 +17,12 @@ services:
     depends_on:
       - db
     volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
+      - static_value:/code/static/
+      - media_value:/code/media/
   frontend:
     image: vladrusinov/foodgram_frontend
     depends_on:
       - backend
-    command: cp -r /app/build/. /frontend_static/
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
@@ -33,7 +32,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
+      - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
+      - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:

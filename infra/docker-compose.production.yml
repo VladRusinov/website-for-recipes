@@ -36,7 +36,7 @@ services:
       - static:/staticfiles/
       - media:/app/media/recipes/images
       - ../frontend/build:/usr/share/nginx/html/
-      - docs:/home/yc-user/foodgram/docs/
+      - docs:/app/docs/
     depends_on:
       - backend
       - frontend

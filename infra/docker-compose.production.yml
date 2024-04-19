@@ -4,7 +4,6 @@ volumes:
   pg_data:
   static:
   media:
-  redoc:
 
 services:
   db:
@@ -20,7 +19,6 @@ services:
     volumes:
       - static:/backend_static
       - media:/app/media/recipes/images
-      - redoc:/backend/foodgram_backend/docs/
   frontend:
     image: vladrusinov/foodgram_frontend
     depends_on:
@@ -37,8 +35,8 @@ services:
       - static:/staticfiles/
       - media:/app/media/recipes/images
       - ../frontend/build:/usr/share/nginx/html/
-      - redoc:/usr/share/nginx/html/api/docs/
+      - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
+      - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
     depends_on:
       - backend
       - frontend
-    restart: always

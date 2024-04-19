@@ -2,8 +2,8 @@ version: '3.3'
 
 volumes:
   pg_data:
-  static_value:
-  media_value:
+  static:
+  media:
   redoc:
 
 services:
@@ -18,24 +18,27 @@ services:
     depends_on:
       - db
     volumes:
-      - static_value:/code/static/
-      - media_value:/code/media/
+      - static:/backend_static
+      - media:/app/media/recipes/images
+      - redoc:/backend/foodgram_backend/docs/
   frontend:
     image: vladrusinov/foodgram_frontend
     depends_on:
       - backend
+    command: cp -r /app/build/. /frontend_static/
     volumes:
-      - ../frontend/:/app/result_build/
+      - static:/frontend_static
   nginx:
-    image: nginx:1.19.3
+    image: vladrusinov/foodgram_gateway
     ports:
-      - "81:81"
+      - "8000:80"
+    env_file: .env
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d
+      - static:/staticfiles/
+      - media:/app/media/recipes/images
       - ../frontend/build:/usr/share/nginx/html/
-      - static_value:/var/html/static/
-      - media_value:/var/html/media/
       - redoc:/usr/share/nginx/html/api/docs/
     depends_on:
       - backend
+      - frontend
     restart: always

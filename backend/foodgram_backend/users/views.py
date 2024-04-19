@@ -68,8 +68,7 @@ class SubscriptionViewSet(ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        user = self.request.user
-        return user.following.all()
+        return User.objects.filter(following__user=self.request.user)
 
 
 class SubscribeView(views.APIView):
